@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const cookieParser = require('cookie-parser');
 const dotenv = require("dotenv");
 dotenv.config({ path: './config/.env' });
 const PORT = process.env.PORT;
@@ -11,12 +10,11 @@ const ordersRouter = require("./src/routes/orders");
 const foodieRouter = require("./src/routes/foodie");
 
 app.use(express.json());
-app.use(cookieParser());
 
 //Routes
-app.use('/dish',dishRouter);
-app.use('/chef',chefRouter);
+app.use('/dishes',dishRouter);
+app.use('/chefs',chefRouter);
 app.use('/orders',ordersRouter);
-app.use('/foodie',foodieRouter);
+app.use('/foodies',foodieRouter);
 
 app.listen(PORT, () => console.log("server started at PORT " + PORT));

@@ -20,22 +20,19 @@ const {
     handleDeleteDish,
     handleImageUpload
 } = require('../controllers/dish');
-const { checkIfUserLoggedIn, authenticateUser } = require('../middlewares/authenticate');
+const { authenticateUser } = require('../middlewares/authenticate');
 
 
+router.get("/", authenticateUser(), handleGetAllDishes);
 
+router.get("/:id", authenticateUser(), handleGetDishById);
 
+router.post("/" , authenticateUser("restrictAccess"), handleCreateDish);
 
-router.get("/", checkIfUserLoggedIn, handleGetAllDishes);
+router.patch("/:id" , authenticateUser("restrictAccess"), handleUpdateDish);
 
-router.get("/:id", checkIfUserLoggedIn, handleGetDishById);
+router.delete("/:id" , authenticateUser("restrictAccess"), handleDeleteDish);
 
-router.post("/", checkIfUserLoggedIn, authenticateUser, handleCreateDish);
-
-router.patch("/:id", checkIfUserLoggedIn, authenticateUser, handleUpdateDish);
-
-router.delete("/:id", checkIfUserLoggedIn, authenticateUser, handleDeleteDish);
-
-router.post("/upload", checkIfUserLoggedIn, authenticateUser, upload.single('file'), handleImageUpload);
+router.post("/upload" , authenticateUser("restrictAccess"), upload.single('file'), handleImageUpload);
 
 module.exports = router;

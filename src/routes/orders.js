@@ -3,14 +3,14 @@ const router = express.Router();
 const {    
 handleListAllOrders,
 handleFoodieOrders,
-handleCreateNewOrder
+handleCreateNewOrder,
 } = require('../controllers/orders');
-const { checkIfUserLoggedIn ,authenticateUser } = require('../middlewares/authenticate');
+const { authenticateUser , setFoodieUsername } = require('../middlewares/authenticate');
 
-router.get("/listAllOrders", checkIfUserLoggedIn , authenticateUser, handleListAllOrders);
+router.get("/list", authenticateUser("restrictAccess"), handleListAllOrders);
 
-router.get("/listFoodieOrders", checkIfUserLoggedIn , handleFoodieOrders);
+router.get("/foodie/list", authenticateUser() , setFoodieUsername , handleFoodieOrders);
 
-router.post("/", checkIfUserLoggedIn , handleCreateNewOrder);
+router.post("/", authenticateUser(), setFoodieUsername , handleCreateNewOrder);
 
 module.exports = router;   

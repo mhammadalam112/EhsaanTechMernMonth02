@@ -1,7 +1,7 @@
-const knexfile = require('../../knexfile');
-const knex = require('knex')(knexfile.development);
 const bcrypt = require('bcryptjs');
-const { authSchema } = require('../schemas/payloadSchema'); 
+const { authSchema , loginSchema } = require('../services/payloadValidation');
+const { getChefByUsername} = require('../repositories/chef');
+const { getFoodieByUsername , createFoodie} = require('../repositories/foodie'); 
 
 async function handleRegistration(req,res){
     const { firstName, lastName, userName, password } = req.body;
@@ -12,11 +12,11 @@ async function handleRegistration(req,res){
         return res.status(400).json({ error: errorInfo });
     }
 
-    const query1 = await knex.select('*').from('chef').where({ username: userName });
-    const query2 = await knex.select('*').from('foodie').where({ username: userName });
+    const query1 = await getChefByUsername(userName);
+    const query2 = await getFoodieByUsername(userName);
 
     if (query1.length > 0 || query2.length > 0) {
-        return res.status(401).json({ "error": "User already exists with the entered username" });
+        return res.status(401).json({ "error": "user already exists with the entered username" });
     }
 
     const encryptedPassword = await bcrypt.hash(password,10);
@@ -29,26 +29,24 @@ async function handleRegistration(req,res){
     };
 
     try {
-        await knex('foodie').insert(insertObject);
+        await createFoodie(insertObject);
         return res.json({ "status": "successfully registered" });
     } catch (err) {
-        return res.json({ "status": "error occured" });
+        return res.json({ "status": "error occured during user registration" });
     }
 };
 
 async function handleLogin(req,res){
     const { userName, password } = req.body;
     let userPassword='';
-
-    if(!(userName && password)){
-        return res.status(400).json({ "error": "Please provide all the values" });
-    }else if(!userName){
-        return res.status(400).json({ "error": "Please enter username" });
-    }else if(!password){
-        return res.status(400).json({ "error": "Please enter password" });
+    
+    const { error } = loginSchema.validate(req.body);
+    if (error) {
+        const errorInfo = error.details[0].message;
+        return res.status(400).json({ error: errorInfo });
     }
 
-    const rows = await knex.select('*').from('foodie').where({ username: userName });
+    const rows = await getFoodieByUsername(userName);
     if( rows.length<= 0){
         return res.status(401).json({ "error": "provided user does not exist. Please register" });
     }else{
@@ -58,8 +56,7 @@ async function handleLogin(req,res){
     const isPasswordValid = await bcrypt.compare(password,userPassword);
     
     if(isPasswordValid){
-        res.cookie("username",userName);
-        return res.json({ "status": "successfully Logged In" });
+        return res.json({ "status": "successfully logged in" });
     }else{
         return res.status(401).json({ "error": "provided username or password is incorrect" });
     }

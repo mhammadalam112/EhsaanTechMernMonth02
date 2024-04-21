@@ -1,67 +1,86 @@
-const knexfile = require('../../knexfile');
-const knex = require('knex')(knexfile.development);
+const { getAllDishes,
+    getDishById,
+    createDish,
+    updateDish,
+    deleteDish } = require('../repositories/dish');
+const { dishCreateSchema, dishUpdateSchema } = require('../services/payloadValidation');
 
 async function handleGetAllDishes(req, res) {
     try {
-        let rows = await knex.select('*').from('dish');
+        let rows = await getAllDishes();
         return res.json(rows);
     } catch (err) {
-        return res.json({ "status": "error occured" });
+        return res.json({ "status": "error occured while fetching dishes" });
     }
 };
 
 async function handleGetDishById(req, res) {
-    const id = req.params.id;
     try {
-        let rows = await knex('dish').where({ id: id });
+        const id = req.params.id;
+        let rows = await getDishById(id);
+        if(rows.length < 1){
+            return res.json({ "message": "no dish exists with the given id" });
+        }
         return res.json(rows);
     } catch (err) {
-        return res.json({ "status": "error occured" });
+        return res.json({ "status": "error occured while fetching dish" });
     }
 };
 
 async function handleCreateDish(req, res) {
-    const body = req.body;
-
-    const insertObject = {
-        dish_name: body.name,
-        category: body.category,
-        price: body.price
-    };
-
     try {
-        await knex('dish').insert(insertObject);
-        return res.json({ "status": "success" });
+        const body = req.body;
+
+        const { error } = dishCreateSchema.validate(body);
+        if (error) {
+            const errorInfo = error.details[0].message;
+            return res.status(400).json({ error: errorInfo });
+        }
+
+        const insertObject = {
+            dish_name: body.name,
+            category: body.category,
+            price: body.price
+        };
+
+        await createDish(insertObject);
+        return res.json({ "status": "new dish created successfully" });
     } catch (err) {
-        return res.json({ "status": "error" });
+        return res.json({ "status": "error occured while creating dish" });
     }
 };
 
 async function handleUpdateDish(req, res) {
-    const body = req.body;
-    const id = req.params.id;
-
-    const updateObject = {
-        dish_name: body.name,
-        category: body.category,
-        price: body.price
-    };
-
     try {
-        await knex('dish').where({ id: id }).update(updateObject);
-        return res.json({ "status": "success" });
+        const body = req.body;
+        const id = req.params.id;
+
+        const { error } = dishUpdateSchema.validate(body);
+        if (error) {
+            const errorInfo = error.details[0].message;
+            return res.status(400).json({ error: errorInfo });
+        }
+
+        const updateObject = {
+            dish_name: body.name,
+            category: body.category,
+            price: body.price
+        };
+
+        await updateDish(id, updateObject);
+        return res.json({ "status": "dish updated successfully" });
     } catch (err) {
-        return res.json({ "status": "error" });
+        return res.json({ "status": "error occured while updating dish" });
     }
 };
 
 async function handleDeleteDish(req, res) {
-    const id = req.params.id;
     try {
-        await knex('dish').where({ id: id }).del();
-        return res.json({ "status": "success" });
+        const id = req.params.id;
+        await deleteDish(id);
+        return res.json({ "status": "dish deleted successfully" });
     } catch (err) {
-        return res.json({ "status": "error" });
+        return res.json({ "status": "error occured while deleting dish" });
     }
 
 };

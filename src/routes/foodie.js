@@ -4,11 +4,11 @@ const {
 handleRegistration,
 handleLogin
 } = require('../controllers/foodie');
-
+const { userLogin } = require('../middlewares/authenticate');
 
 router.post("/register", handleRegistration);
 
-router.post("/login", handleLogin);
+router.post("/login", userLogin, handleLogin);
 
 
 

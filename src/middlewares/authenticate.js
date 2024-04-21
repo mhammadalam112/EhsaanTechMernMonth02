@@ -1,40 +1,55 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 dotenv.config({ path: './config/.env' });
+var username = '';
 
-async function checkIfUserLoggedIn(req, res, next) {
+async function userLogin(req, res, next) {
     try {
-        const username = req.cookies.username;
-
-        if (!username) {
-            return res.json({ "error": "User Not Logged In. Please Login again" });
-        }
-
+        username = req.body.userName;
         next();
     } catch (err) {
-        return res.json({ "error": "User Not Logged In. Please Login again" });
+        return res.json({ "error": "something went wrong" });
     }
 };
 
-async function authenticateUser(req, res, next) {
+function authenticateUser(access) {
     try {
-        const token = req.cookies.token;
 
-        if (!token) {
-            return res.json({ "error": "Not authorized to perform this operation" });
-        }
+        return async function (req, res, next) {
 
-        const validUser = jwt.verify(token, process.env.JWT_SECREY_KEY);
+            if (!username) {
+                return res.json({ "error": "user not logged in. Please login again" });
+            }
 
-        if (!validUser) {
-            return res.json({ "error": "Not authorized to perform this operation" });
-        }
+            if (access == "restrictAccess") {
 
-        next();
+                const token = req.headers.authorization;
+
+                if (!token) {
+                    return res.json({ "error": "not authorized to perform this operation" });
+                }
+
+                const validUser = jwt.verify(token, process.env.JWT_SECREY_KEY);
+
+                if (!validUser) {
+                    return res.json({ "error": "not authorized to perform this operation" });
+                }
+            }
+            
+            next();
+        };
     } catch (err) {
-        return res.json({ "error": "Failed to verify user. Please Login again" });
+        return res.json({ "error": "failed to verify user. Please login again" });
     }
 };
 
+async function setFoodieUsername(req, res, next) {
+    try {
+        req.username = username;
+        next();
+    } catch (err) {
+        return res.json({ "error": "something went wrong" });
+    }
+};
 
-module.exports = { authenticateUser, checkIfUserLoggedIn};
+module.exports = { authenticateUser, userLogin, setFoodieUsername };
