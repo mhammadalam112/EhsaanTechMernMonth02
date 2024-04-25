@@ -1,5 +1,6 @@
 const { getFoodieByUsername, createFoodie } = require('../repositories/foodie');
 const Boom = require('@hapi/boom');
+const bcrypt = require('bcryptjs');
 
 async function getFoodieByUsernameService(userName) {
     const rows = await getFoodieByUsername(userName);

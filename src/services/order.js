@@ -1,5 +1,5 @@
 const { getAllOrders, getFoodieOrders, createOrder } = require('../repositories/order');
-const Boom = require('@hapi/boom'); 
+const Boom = require('@hapi/boom');
 
 async function getAllOrdersService() {
     const rows = await getAllOrders();
@@ -8,7 +8,7 @@ async function getAllOrdersService() {
 
 async function getFoodieOrdersService(foodieId) {
     const rows = await getFoodieOrders(foodieId);
-    if(rows.length < 1){
+    if (rows.length < 1) {
         const error = Boom.badRequest('there are no pending orders for you');
         throw error;
     }
@@ -16,12 +16,22 @@ async function getFoodieOrdersService(foodieId) {
 };
 
 async function createOrderService(insertObject) {
-    await createOrder(insertObject);
+    try {
+        await createOrder(insertObject);
+    } catch (err) {
+        if (err.message.includes('foreign key constraint fails')) {
+            const error = Boom.badRequest('No such dish exists');
+            throw error;
+        } else {
+            const error = Boom.badRequest('error occured while creating order');
+            throw error;
+        }
+    }
 };
 
 
-module.exports = {
-    getAllOrdersService,
-    getFoodieOrdersService,
-    createOrderService
-};
+    module.exports = {
+        getAllOrdersService,
+        getFoodieOrdersService,
+        createOrderService
+    };
