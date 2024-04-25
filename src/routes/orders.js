@@ -5,12 +5,12 @@ handleListAllOrders,
 handleFoodieOrders,
 handleCreateNewOrder,
 } = require('../controllers/orders');
-const { authenticateUser , setFoodieUsername } = require('../middlewares/authenticate');
+const { authenticateUser } = require('../middlewares/authenticate');
 
 router.get("/list", authenticateUser("restrictAccess"), handleListAllOrders);
 
-router.get("/foodie/list", authenticateUser() , setFoodieUsername , handleFoodieOrders);
+router.get("/foodie/list", authenticateUser() , handleFoodieOrders);
 
-router.post("/", authenticateUser(), setFoodieUsername , handleCreateNewOrder);
+router.post("/", authenticateUser() , handleCreateNewOrder);
 
 module.exports = router;   

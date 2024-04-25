@@ -1,0 +1,238 @@
+{
+	"info": {
+		"_postman_id": "7de529d1-61cd-47d4-8f36-26b3434e52e6",
+		"name": "Foodie App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "19620616"
+	},
+	"item": [
+		{
+			"name": "Chef",
+			"item": [
+				{
+					"name": "Sign Up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"mhammadalam123\",\r\n  \"password\": \"Test@123\",\r\n  \"firstName\" : \"Hammad\",\r\n  \"lastName\" : \"Khan\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/chefs/register"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"mhammadalam123\",\r\n  \"password\": \"Test@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/chefs/login"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Foodie",
+			"item": [
+				{
+					"name": "Sign Up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"hammadalam1\",\r\n  \"password\": \"Test@123\",\r\n  \"firstName\" : \"Hammad\",\r\n  \"lastName\" : \"Alam\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/foodies/register"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"hammadalam1\",\r\n  \"password\": \"Test@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/foodies/login"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dish",
+			"item": [
+				{
+					"name": "Get all dishes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/dishes"
+					},
+					"response": []
+				},
+				{
+					"name": "Get dish by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/dishes/3"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Dish",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1oYW1tYWRhbGFtMTIzIiwiaWF0IjoxNzEzOTk2NjEyfQ.KpglBAGlsjtYCgiMIOxDWRv4J4bO9Z_F5VJP2-dCea0",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Pulao\",\r\n    \"category\" : \"Desi Food\",\r\n    \"price\" : 250\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/dishes"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Dish",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \r\n    \"price\" : 200\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/dishes/1"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Dish",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBhc2hhMTIzIiwiaWF0IjoxNzEzNjU4OTI5fQ.Z6BGwqyKUk9rTYSlIz61hH2WaJ_DBIwi7NRc6YItf18",
+								"type": "text"
+							}
+						],
+						"url": "http://localhost:8000/dishes/"
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/mhamm/Pictures/burger.jpg"
+								}
+							]
+						},
+						"url": "http://localhost:8000/dishes/upload"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "List all oders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBhc2hhMTIzIiwiaWF0IjoxNzEzNjU4OTI5fQ.Z6BGwqyKUk9rTYSlIz61hH2WaJ_DBIwi7NRc6YItf18",
+								"type": "text"
+							}
+						],
+						"url": "http://localhost:8000/orders/list"
+					},
+					"response": []
+				},
+				{
+					"name": "List foodie order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/orders/foodie/list"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Burger\",\r\n    \"quantity\" : \"6\",\r\n    \"dish_id\" : 5,\r\n    \"price\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/orders/"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

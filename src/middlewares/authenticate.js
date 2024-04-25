@@ -1,55 +1,61 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 dotenv.config({ path: './config/.env' });
-var username = '';
+const { getChefByUsername } = require('../repositories/chef');
+const { getFoodieByUsername } = require('../repositories/foodie');
+const Boom = require('@hapi/boom');
+var userId = '';
 
 async function userLogin(req, res, next) {
-    try {
-        username = req.body.userName;
-        next();
-    } catch (err) {
-        return res.json({ "error": "something went wrong" });
+    const userName = req.body.userName;
+
+    const query1 = await getChefByUsername(userName);
+    const query2 = await getFoodieByUsername(userName);
+
+    if (query1.length < 1 && query2.length < 1) {
+        const errorBoom = Boom.badRequest('provided user does not exist. Please register');
+        throw errorBoom;
+    } else {
+        if (query1.length > 0) {
+            userId = query1[0].userId;
+        } else {
+            userId = query2[0].userId;
+        }
     }
+    next();
 };
 
 function authenticateUser(access) {
-    try {
+    return async function (req, res, next) {
 
-        return async function (req, res, next) {
+        if (!userId) {
+            return res.json({ "error": "user not logged in. Please login again" });
+        }
 
-            if (!username) {
-                return res.json({ "error": "user not logged in. Please login again" });
+        if (access == "restrictAccess") {
+
+            const token = req.headers.authorization;
+
+            if (!token) {
+                return res.json({ "error": "not authorized to perform this operation" });
             }
 
-            if (access == "restrictAccess") {
+            const validUser = jwt.verify(token, process.env.JWT_SECREY_KEY);
 
-                const token = req.headers.authorization;
-
-                if (!token) {
-                    return res.json({ "error": "not authorized to perform this operation" });
-                }
-
-                const validUser = jwt.verify(token, process.env.JWT_SECREY_KEY);
-
-                if (!validUser) {
-                    return res.json({ "error": "not authorized to perform this operation" });
-                }
+            if (!validUser) {
+                return res.json({ "error": "not authorized to perform this operation" });
             }
-            
-            next();
-        };
-    } catch (err) {
-        return res.json({ "error": "failed to verify user. Please login again" });
-    }
-};
+        }
 
-async function setFoodieUsername(req, res, next) {
-    try {
-        req.username = username;
+        req.userId = userId;
         next();
-    } catch (err) {
-        return res.json({ "error": "something went wrong" });
-    }
+    };
 };
 
-module.exports = { authenticateUser, userLogin, setFoodieUsername };
+async function globalErrorHandler(err, req, res, next) {
+    err.statusCode = err.statusCode ? err.statusCode : 500;
+    return res.status(err.statusCode).json({ message : err.message});
+};
+
+
+module.exports = { authenticateUser, userLogin, globalErrorHandler };
