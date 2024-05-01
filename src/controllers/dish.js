@@ -1,19 +1,19 @@
-const { getAllDishesService,
-    getDishByIdService,
-    createDishService,
-    updateDishService,
-    deleteDishService } = require('../services/dish');
+const { getAllDishes,
+    getDishById,
+    createDish,
+    updateDish,
+    deleteDish } = require('../services/dish');
 const { dishCreateSchema, dishUpdateSchema } = require('../utils/payloadValidation');
 const Boom = require('@hapi/boom');
 
 async function handleGetAllDishes(req, res) {
-    let rows = await getAllDishesService();
+    let rows = await getAllDishes();
     return res.json(rows);
 };
 
 async function handleGetDishById(req, res) {
     const id = req.params.id;
-    let rows = await getDishByIdService(id);
+    let rows = await getDishById(id);
     return res.json(rows);
 };
 
@@ -35,7 +35,7 @@ async function handleCreateDish(req, res) {
         chefId: chefId
     };
 
-    await createDishService(insertObject);
+    await createDish(insertObject);
     return res.json({ "status": "new dish created successfully" });
 };
 
@@ -56,13 +56,13 @@ async function handleUpdateDish(req, res) {
         price: body.price
     };
 
-    await updateDishService(id, updateObject);
+    await updateDish(id, updateObject);
     return res.json({ "status": "dish updated successfully" });
 };
 
 async function handleDeleteDish(req, res) {
     const id = req.params.id;
-    await deleteDishService(id);
+    await deleteDish(id);
     return res.json({ "status": "dish deleted successfully" });
 };
 

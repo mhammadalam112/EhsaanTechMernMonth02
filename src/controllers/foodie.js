@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const { authSchema , loginSchema } = require('../utils/payloadValidation');
-const { getChefByUsernameService} = require('../services/chef');
-const { getFoodieByUsernameService, createFoodieService, handleLoginService } = require('../services/foodie');
+const { getChefByUsername} = require('../services/chef');
+const { getFoodieByUsername, createFoodie, handleLoginService } = require('../services/foodie');
 const Boom = require('@hapi/boom');
 
 async function handleRegistration(req,res){
@@ -14,8 +14,8 @@ async function handleRegistration(req,res){
         throw errorBoom;
     }
 
-    const query1 = await getChefByUsernameService(userName);
-    const query2 = await getFoodieByUsernameService(userName);
+    const query1 = await getChefByUsername(userName);
+    const query2 = await getFoodieByUsername(userName);
 
     if (query1.length > 0 || query2.length > 0) {
         const errorBoom = Boom.badRequest('User already exists with the entered username');
@@ -32,7 +32,7 @@ async function handleRegistration(req,res){
     };
 
 
-        await createFoodieService(insertObject);
+        await createFoodie(insertObject);
         return res.json({ "status": "successfully registered" });
 };
 
@@ -46,7 +46,7 @@ async function handleLogin(req,res){
         throw errorBoom;
     }
 
-    const foodies = await getFoodieByUsernameService(userName);
+    const foodies = await getFoodieByUsername(userName);
     await handleLoginService(foodies,userName,password,res);
     
     return res.json({ "status": "successfully logged in" });

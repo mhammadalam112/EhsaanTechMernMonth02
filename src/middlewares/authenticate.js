@@ -18,8 +18,10 @@ async function userLogin(req, res, next) {
     } else {
         if (query1.length > 0) {
             userId = query1[0].userId;
+            req.userType="chef";
         } else {
             userId = query2[0].userId;
+            req.userType="foodie";
         }
     }
     next();

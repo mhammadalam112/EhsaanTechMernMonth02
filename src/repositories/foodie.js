@@ -2,7 +2,7 @@ const knexfile = require('../../knexfile');
 const knex = require('knex')(knexfile.development);
 
 async function getFoodieByUsername(userName) {
-    const rows = await knex.select('*').from('foodie').where({ username: userName });
+    const rows =  knex.select('*').from('foodie').where({ username: userName });
     return rows;
 };
 

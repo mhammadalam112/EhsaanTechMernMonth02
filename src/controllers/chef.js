@@ -3,8 +3,8 @@ const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 dotenv.config({ path: './config/.env' });
 const { authSchema, loginSchema } = require('../utils/payloadValidation');
-const { getChefByUsernameService, createChefService,handleLoginService} = require('../services/chef');
-const { getFoodieByUsernameService } = require('../services/foodie');
+const { getChefByUsername, createChef,handleLoginService} = require('../services/chef');
+const { getFoodieByUsername } = require('../services/foodie');
 const Boom = require('@hapi/boom');
 
 async function handleRegistration(req, res) {
@@ -17,8 +17,8 @@ async function handleRegistration(req, res) {
             throw errorBoom;
         }
 
-        const query1 = await getChefByUsernameService(userName);
-        const query2 = await getFoodieByUsernameService(userName);
+        const query1 = await getChefByUsername(userName);
+        const query2 = await getFoodieByUsername(userName);
 
         if (query1.length > 0 || query2.length > 0) {
             const errorBoom = Boom.badRequest('User already exists with the entered username');
@@ -34,7 +34,7 @@ async function handleRegistration(req, res) {
             password: encryptedPassword
         };
 
-        await createChefService(insertObject);
+        await createChef(insertObject);
         return res.json({ "status": "successfully registered" });
 };
 
@@ -48,7 +48,7 @@ async function handleLogin(req, res) {
         throw errorBoom;
     }
 
-    const chefs = await getChefByUsernameService(userName);
+    const chefs = await getChefByUsername(userName);
     await handleLoginService(chefs,userName,password,res);
 
     return res.json({ "status": "successfully Logged In" });

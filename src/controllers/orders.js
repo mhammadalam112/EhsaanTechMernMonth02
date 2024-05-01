@@ -1,15 +1,15 @@
-const { getAllOrdersService, getFoodieOrdersService, createOrderService } = require('../services/order');
+const { getPendingOrders, getFoodieOrders, createOrder, completeOrder } = require('../services/order');
 const { ordersSchema } = require('../utils/payloadValidation');
 const Boom = require('@hapi/boom');
 
-async function handleListAllOrders(req, res) {
-    let rows = await getAllOrdersService();
+async function handleListPendingOrders(req, res) {
+    let rows = await getPendingOrders();
     return res.json(rows);
 };
 
 async function handleFoodieOrders(req, res) {
     const foodieId = req.userId;
-    let rows = await getFoodieOrdersService(foodieId);
+    let rows = await getFoodieOrders(foodieId);
 
     return res.json(rows);
 };
@@ -33,13 +33,24 @@ async function handleCreateNewOrder(req, res) {
         price: body.price
     };
 
-    await createOrderService(insertObject);
+    await createOrder(insertObject);
     return res.json({ "status": "new order created successfully" });
 };
 
+async function handleCompleteOrder(req, res) {
+    const id = req.params.id;
+
+    const updateObject = {
+        status: "FULFILLED"
+    };
+
+    await completeOrder(id, updateObject);
+    return res.json({ "status": "order completed successfully" });
+};
 
 module.exports = {
-    handleListAllOrders,
+    handleListPendingOrders,
     handleFoodieOrders,
-    handleCreateNewOrder
+    handleCreateNewOrder,
+    handleCompleteOrder
 };

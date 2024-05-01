@@ -38,6 +38,7 @@ exports.up = function(knex) {
       table.integer('dish_id').unsigned();
       table.foreign('dish_id').references('dish.id');
       table.integer('price');
+      table.enum('status', ['PENDING', 'FULFILLED']).notNullable().defaultTo('PENDING');
       table.timestamp('createdts').notNullable().defaultTo(knex.fn.now());
     });
 };
