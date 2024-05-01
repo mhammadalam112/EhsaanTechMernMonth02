@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const { authSchema , loginSchema } = require('../utils/payloadValidation');
 const { getChefByUsername} = require('../services/chef');
-const { getFoodieByUsername, createFoodie, handleLoginService } = require('../services/foodie');
+const { getFoodieByUsername, createFoodie } = require('../services/foodie');
 const Boom = require('@hapi/boom');
 
 async function handleRegistration(req,res){
@@ -36,23 +36,7 @@ async function handleRegistration(req,res){
         return res.json({ "status": "successfully registered" });
 };
 
-async function handleLogin(req,res){
-    const { userName, password } = req.body;
-    
-    const { error } = loginSchema.validate(req.body);
-    if (error) {
-        const errorInfo = error.details[0].message;
-        const errorBoom = Boom.badRequest(errorInfo);
-        throw errorBoom;
-    }
-
-    const foodies = await getFoodieByUsername(userName);
-    await handleLoginService(foodies,userName,password,res);
-    
-    return res.json({ "status": "successfully logged in" });
-};
 
 module.exports = {
-    handleRegistration,
-    handleLogin
+    handleRegistration
 };

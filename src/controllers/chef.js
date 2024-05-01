@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 dotenv.config({ path: './config/.env' });
 const { authSchema, loginSchema } = require('../utils/payloadValidation');
-const { getChefByUsername, createChef,handleLoginService} = require('../services/chef');
+const { getChefByUsername, createChef} = require('../services/chef');
 const { getFoodieByUsername } = require('../services/foodie');
 const Boom = require('@hapi/boom');
 
@@ -38,24 +38,8 @@ async function handleRegistration(req, res) {
         return res.json({ "status": "successfully registered" });
 };
 
-async function handleLogin(req, res) {
-    const { userName, password } = req.body;
 
-    const { error } = loginSchema.validate(req.body);
-    if (error) {
-        const errorInfo = error.details[0].message;
-        const errorBoom = Boom.badRequest(errorInfo);
-        throw errorBoom;
-    }
-
-    const chefs = await getChefByUsername(userName);
-    await handleLoginService(chefs,userName,password,res);
-
-    return res.json({ "status": "successfully Logged In" });
-
-};
 
 module.exports = {
-    handleRegistration,
-    handleLogin
+    handleRegistration
 };
