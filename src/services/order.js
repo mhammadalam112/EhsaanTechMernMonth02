@@ -1,8 +1,8 @@
 const orderRepo = require('../repositories/order');
 const Boom = require('@hapi/boom');
 
-async function getPendingOrders() {
-    const rows = await orderRepo.getAllOrders();
+async function getPendingOrders(chefId) {
+    const rows = await orderRepo.getPendingOrders(chefId);
     return rows;
 };
 

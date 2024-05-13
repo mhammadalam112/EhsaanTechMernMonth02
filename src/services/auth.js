@@ -15,7 +15,7 @@ async function login(user, userName, password, res, userType) {
     
     if(userType == 'chef'){
         const token = jwt.sign({ username: userName }, process.env.JWT_SECREY_KEY, { expiresIn: '1h' });
-        res.setHeader('Authorization', token);
+        res.token= token;
     }
 };
 

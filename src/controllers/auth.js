@@ -25,7 +25,7 @@ async function handleLogin(req, res) {
 
     
 
-    return res.json({ "status": "successfully Logged In" });
+    return res.json({ "status": "successfully Logged In", "token": res.token });
 
 };
 

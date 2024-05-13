@@ -3,7 +3,8 @@ const { ordersSchema } = require('../utils/payloadValidation');
 const Boom = require('@hapi/boom');
 
 async function handleListPendingOrders(req, res) {
-    let rows = await getPendingOrders();
+    const chefId = req.userId;
+    let rows = await getPendingOrders(chefId);
     return res.json(rows);
 };
 
