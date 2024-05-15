@@ -21,7 +21,15 @@ async function getFoodieOrders(foodieId: string) {
     return rows;
 };
 
-async function createOrder(insertObject: any) {
+interface insertObject {
+    dish_name: string;
+    order_quantity: string;
+    foodieId: string; 
+    dish_id: string; 
+    price: string;
+}
+
+async function createOrder(insertObject: insertObject) {
     await knex('orders').insert(insertObject);
 };
 

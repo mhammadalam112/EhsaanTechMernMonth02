@@ -36,7 +36,15 @@ async function handleCreateNewOrder(req: customRequest, res: Response) {
         throw errorBoom;
     }
 
-    const insertObject = {
+    interface insertObject {
+        dish_name: string;
+        order_quantity: string;
+        foodieId: string; 
+        dish_id: string; 
+        price: string;
+    }
+
+    const insertObject: insertObject = {
         dish_name: body.name,
         order_quantity: body.quantity,
         foodieId: foodieId,
@@ -51,7 +59,11 @@ async function handleCreateNewOrder(req: customRequest, res: Response) {
 async function handleCompleteOrder(req: Request, res: Response) {
     const id = req.params.id;
 
-    const updateObject = {
+    interface updateObject {
+        status: string;
+    }
+
+    const updateObject: updateObject = {
         status: "FULFILLED"
     };
 

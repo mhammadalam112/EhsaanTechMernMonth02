@@ -30,11 +30,20 @@ async function handleLogin(req: customRequest, res: customResponse) {
         throw errorBoom;
     }
 
+    interface user {
+        userId: number;
+        first_name: string;
+        last_name: string;
+        username: string;
+        password: string;
+        createdts: Date;
+    }
+
     if(req.userType == 'chef' ){
-        var user = await getChefByUsername(userName);
+        var user: user[] = await getChefByUsername(userName);
         await login(user,userName,password,res,"chef"); 
     } else {
-        var user = await getFoodieByUsername(userName);
+        var user: user[] = await getFoodieByUsername(userName);
         await login(user,userName,password,res,"foodie"); 
     }
 

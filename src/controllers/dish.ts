@@ -35,7 +35,14 @@ async function handleCreateDish(req: customRequest, res: Response) {
         throw errorBoom;
     }
 
-    const insertObject = {
+    interface insertObject {
+        dish_name: string;
+        category: string;
+        price: string; 
+        chefId: string; 
+    }
+
+    const insertObject: insertObject = {
         dish_name: body.name,
         category: body.category,
         price: body.price,
@@ -57,7 +64,13 @@ async function handleUpdateDish(req: Request, res: Response) {
         throw errorBoom;
     }
 
-    const updateObject = {
+    interface updateObject {
+        dish_name: string;
+        category: string;
+        price: string;
+    }
+
+    const updateObject: updateObject = {
         dish_name: body.name,
         category: body.category,
         price: body.price

@@ -25,7 +25,14 @@ async function handleRegistration(req: Request, res: Response){
 
     const encryptedPassword = await bcrypt.hash(password,10);
 
-    const insertObject = {
+    interface insertObject {
+        first_name: string;
+        last_name: string;
+        username: string; 
+        password: string; 
+    }
+
+    const insertObject: insertObject = {
         first_name: firstName,
         last_name: lastName,
         username: userName,

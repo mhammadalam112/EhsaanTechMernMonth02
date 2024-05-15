@@ -5,7 +5,14 @@ async function getChefByUsername(userName: string) {
     return rows;
 };
 
-async function createChef(insertObject: any) {
+interface insertObject {
+    first_name: string;
+    last_name: string;
+    username: string; 
+    password: string; 
+}
+
+async function createChef(insertObject: insertObject) {
     await chefRepo.createChef(insertObject);
 };
 

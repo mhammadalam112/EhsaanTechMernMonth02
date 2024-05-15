@@ -6,7 +6,14 @@ async function getFoodieByUsername(userName: string) {
     return rows;
 };
 
-async function createFoodie(insertObject: any) {
+interface insertObject {
+    first_name: string;
+    last_name: string;
+    username: string; 
+    password: string; 
+}
+
+async function createFoodie(insertObject: insertObject) {
     await knex('foodie').insert(insertObject);
 };
 

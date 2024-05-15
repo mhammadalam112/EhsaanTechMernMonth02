@@ -3,12 +3,20 @@ import Boom from '@hapi/boom';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-interface customResponse extends Response{
+interface customResponse extends Response {
     token: string;
 }
 
+interface user {
+    userId: number;
+    first_name: string;
+    last_name: string;
+    username: string;
+    password: string;
+    createdts: Date;
+}
 
-async function login(user: any, userName: string, password: string, res: customResponse, userType: string) {
+async function login(user: user[], userName: string, password: string, res: customResponse, userType: string) {
     var userPassword = user[0].password;
 
     const isPasswordValid = await bcrypt.compare(password, userPassword);
@@ -18,11 +26,11 @@ async function login(user: any, userName: string, password: string, res: customR
         throw errorBoom;
     }
 
-    
-    if(userType == 'chef'){
+
+    if (userType == 'chef') {
         const jwtSecretKey: string = process.env.JWT_SECREY_KEY as string;
         const token = jwt.sign({ username: userName }, jwtSecretKey, { expiresIn: '1h' });
-        res.token= token;
+        res.token = token;
     }
 };
 

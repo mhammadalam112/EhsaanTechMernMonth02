@@ -15,11 +15,24 @@ async function getDishById(id: string) {
     return rows;
 };
 
-async function createDish(insertObject: any) {
+interface insertObject {
+    dish_name: string;
+    category: string;
+    price: string; 
+    chefId: string; 
+}
+
+async function createDish(insertObject: insertObject) {
     await dishRepo.createDish(insertObject);
 };
 
-async function updateDish(id: string, updateObject: any) {
+interface updateObject {
+    dish_name: string;
+    category: string;
+    price: string;
+}
+
+async function updateDish(id: string, updateObject: updateObject) {
     const updatedDish=await dishRepo.updateDish(id, updateObject);
     if(updatedDish == 0){
         const error = Boom.badRequest('no such dish exists with the given id');

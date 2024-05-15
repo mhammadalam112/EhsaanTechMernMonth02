@@ -12,12 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.globalErrorHandler = exports.userLogin = exports.authenticateUser = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config({ path: './config/.env' });
 const { getChefByUsername } = require('../repositories/chef');
 const { getFoodieByUsername } = require('../repositories/foodie');
-const Boom = require('@hapi/boom');
+const boom_1 = __importDefault(require("@hapi/boom"));
 var userId = '';
 function userLogin(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -25,7 +26,7 @@ function userLogin(req, res, next) {
         const query1 = yield getChefByUsername(userName);
         const query2 = yield getFoodieByUsername(userName);
         if (query1.length < 1 && query2.length < 1) {
-            const errorBoom = Boom.badRequest('provided user does not exist. Please register');
+            const errorBoom = boom_1.default.badRequest('provided user does not exist. Please register');
             throw errorBoom;
         }
         else {
@@ -41,6 +42,7 @@ function userLogin(req, res, next) {
         next();
     });
 }
+exports.userLogin = userLogin;
 ;
 function authenticateUser(access) {
     return function (req, res, next) {
@@ -64,6 +66,7 @@ function authenticateUser(access) {
         });
     };
 }
+exports.authenticateUser = authenticateUser;
 ;
 function globalErrorHandler(err, req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -71,5 +74,5 @@ function globalErrorHandler(err, req, res, next) {
         return res.status(err.statusCode).json({ message: err.message });
     });
 }
+exports.globalErrorHandler = globalErrorHandler;
 ;
-module.exports = { authenticateUser, userLogin, globalErrorHandler };

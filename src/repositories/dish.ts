@@ -11,11 +11,24 @@ async function getDishById(id: string) {
     return rows;
 };
 
-async function createDish(insertObject: any) {
+interface insertObject {
+    dish_name: string;
+    category: string;
+    price: string; 
+    chefId: string; 
+}
+
+async function createDish(insertObject: insertObject) {
     await knex('dish').insert(insertObject);
 };
 
-async function updateDish(id: string, updateObject: any) {
+interface updateObject {
+    dish_name: string;
+    category: string;
+    price: string;
+}
+
+async function updateDish(id: string, updateObject: updateObject) {
     const rows= knex('dish').where({ id: id }).update(updateObject);
     return rows;
 };

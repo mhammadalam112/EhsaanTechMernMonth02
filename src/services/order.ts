@@ -15,7 +15,15 @@ async function getFoodieOrders(foodieId: string) {
     return rows;
 };
 
-async function createOrder(insertObject: any) {
+interface insertObject {
+    dish_name: string;
+    order_quantity: string;
+    foodieId: string; 
+    dish_id: string; 
+    price: string;
+}
+
+async function createOrder(insertObject: insertObject) {
     try {
         await orderRepo.createOrder(insertObject);
     } catch (err: any) {
@@ -29,7 +37,11 @@ async function createOrder(insertObject: any) {
     }
 };
 
-async function completeOrder(id: string, updateObject: any) {
+interface updateObject {
+    status: string;
+}
+
+async function completeOrder(id: string, updateObject: updateObject) {
     const completedOrder=await orderRepo.completeOrder(id, updateObject);
     if(completedOrder == 0){
         const error = Boom.badRequest('no such order exists with the given id');
