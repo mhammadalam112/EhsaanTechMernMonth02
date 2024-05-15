@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config({ path: './config/.env' });
 const { getChefByUsername } = require('../repositories/chef');
 const { getFoodieByUsername } = require('../repositories/foodie');
-const Boom = require('@hapi/boom');
-var userId = '';
+import Boom from '@hapi/boom';
+var userId: string = '';
 
 interface customRequest extends Request {
     userId: string;
@@ -23,7 +23,7 @@ async function userLogin(req: customRequest, res: Response, next: NextFunction) 
     const query2 = await getFoodieByUsername(userName);
 
     if (query1.length < 1 && query2.length < 1) {
-        const errorBoom = Boom.badRequest('provided user does not exist. Please register');
+        const errorBoom: Error = Boom.badRequest('provided user does not exist. Please register');
         throw errorBoom;
     } else {
         if (query1.length > 0) {
@@ -46,14 +46,14 @@ function authenticateUser(access: string) {
 
         if (access == "restrictAccess") {
 
-            const token = req.headers.authorization;
+            const token: string | undefined = req.headers.authorization;
 
             if (!token) {
                 return res.json({ "error": "not authorized to perform this operation" });
             }
             const jwtSecretKey: string = process.env.JWT_SECREY_KEY as string;
 
-            const validUser = jwt.verify(token, jwtSecretKey);
+            const validUser: string | JwtPayload = jwt.verify(token, jwtSecretKey);
 
             if (!validUser) {
                 return res.json({ "error": "not authorized to perform this operation" });
@@ -71,4 +71,4 @@ async function globalErrorHandler(err: globalErr, req: Request, res: Response, n
 };
 
 
-module.exports = { authenticateUser, userLogin, globalErrorHandler };
+export { authenticateUser, userLogin, globalErrorHandler };

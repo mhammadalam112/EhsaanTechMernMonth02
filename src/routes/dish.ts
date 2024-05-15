@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
-import multer from 'multer';
-const storage = multer.diskStorage({
+import multer, { Multer, StorageEngine } from 'multer';
+const storage: StorageEngine = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads')
     },
@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
     }
 })
 
-const upload = multer({ storage: storage });
+const upload: Multer = multer({ storage: storage });
 const {
     handleGetAllDishes,
     handleGetDishById,
