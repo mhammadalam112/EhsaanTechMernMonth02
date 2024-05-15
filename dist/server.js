@@ -1,0 +1,23 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const app = (0, express_1.default)();
+require("express-async-errors");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config({ path: './config/.env' });
+const PORT = process.env.PORT;
+const chef_1 = __importDefault(require("./routes/chef"));
+const dish_1 = __importDefault(require("./routes/dish"));
+const orders_1 = __importDefault(require("./routes/orders"));
+const foodie_1 = __importDefault(require("./routes/foodie"));
+const { globalErrorHandler } = require('./middlewares/authenticate');
+app.use(express_1.default.json());
+app.use('/dishes', dish_1.default);
+app.use('/chefs', chef_1.default);
+app.use('/orders', orders_1.default);
+app.use('/foodies', foodie_1.default);
+app.use(globalErrorHandler);
+app.listen(PORT, () => console.log("server started at PORT " + PORT));
